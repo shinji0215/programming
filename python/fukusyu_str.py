@@ -1,3 +1,11 @@
+# str型
+#len() 長さ
+#[::] 指定切り出し
+#split() セパレータ毎に切り出し
+#join()　連結
+#replace() 置換
+#format() 文字列生成
+#書式指定子
 
 def f_str():
     print("f_str")

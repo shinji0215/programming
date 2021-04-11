@@ -1,3 +1,8 @@
+## data
+# int
+# str
+# float
+# fomat()
 
 
 def p2_1_Data():
