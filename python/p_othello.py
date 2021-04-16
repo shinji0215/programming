@@ -22,6 +22,16 @@ ban = [
 ]
 now_koma = BLACK            #現在の順番(最初は黒から)
 
+chk_ban = [
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ], 
+    [0, 0, 0, 0, 0, 0, 0,0 ]
+]
 
 def checkBan(x, y):
     """駒が置けるか？"""
@@ -84,7 +94,7 @@ def checkBan(x, y):
 
 
 
-def display():
+def display(ban):
     """盤面を表示する"""
     for y in range(8):
         print(f"{y+1}", end='')
@@ -99,26 +109,42 @@ def display():
                 pass   #何もしない
         print("")
 
+#盤表示(デバッグ用)
+def disp_ban(ban):
+    """盤面を表示する"""
+    for y in range(8):
+        print(f"{y+1}", end='-')
+        for x in range(8):
+            #print(ban[y][x].format(), end=',')
+            print('{:>2d}'.format(ban[y][x]), end=',') 
+        print("")
 
 
 def othello_loop():
     global f_pass
     while True:
+        #駒が置けるかすべてのマスを判定する
+        for l in range(8):
+            for m in range(8):
+                chk_ban[l][m] = checkBan(m, l)
+        
+        disp_ban(chk_ban)
+
         # 駒を置く位置を入力する
         x, y = map(int, input("駒を置いてください.(x y):").split())  #mapで数字に変換
         print(f"{x} {y}")
 
 
         # 駒が置けるか判定
-        ret = checkBan(x-1, y-1)
-        if ret > 0:
+        #ret = checkBan(x-1, y-1)
+        if chk_ban[y-1][x-1] > 0:
             print('駒が置ける')
 
         # 駒をひっくり返す
         ban[y-1][x-1] = BLACK
 
         #盤面表示更新
-        display()
+        display(ban)
 
         #ゲーム終了判定
 
@@ -136,7 +162,7 @@ def othello_loop():
 #メイン
 #
 #オセロ盤表示
-display()
+display(ban)
 
 #ゲーム開始
 othello_loop()
