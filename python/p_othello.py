@@ -6,27 +6,30 @@ f_pass = False   #パス実行有無
 NONE = 0
 BLACK = 1
 WHITE = 2
+now_koma = BLACK            #現在の順番(最初は黒から)
+pass_status = None          #誰もパスはしていない
+
 ban = [
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 2, 1, 0, 0,0 ], 
-    [0, 0, 0, 1, 2, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ]
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 2, 1, 0, 0, 0 ], 
+    [0, 0, 0, 1, 2, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ]
 ]
 
 
 chk_ban = [
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ], 
-    [0, 0, 0, 0, 0, 0, 0,0 ]
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ], 
+    [0, 0, 0, 0, 0, 0, 0, 0 ]
 ]
 
 def checkBan(x, y, now_koma, exe=False):
@@ -98,10 +101,28 @@ def checkBan(x, y, now_koma, exe=False):
     return num
     #
 
+def koma_status():
+    blk_num = 0
+    whi_num = 0
+    for i in range(8):
+        blk_num += ban[i].count(BLACK)
+        whi_num += ban[i].count(WHITE)
+
+    return blk_num, whi_num
 
 
 def display(ban):
     """盤面を表示する"""
+    print('*****************')
+    blk_num, whi_num = koma_status()
+    print('BLACK={0} WHITE={1}'.format(blk_num, whi_num))
+
+    if(now_koma == BLACK):
+        print('[BLACK(O)]')
+    else:
+        print('[WHITE(+)]')
+
+    print(' 12345678')
     for y in range(8):
         print(f"{y+1}", end='')
         for x in range(8):
@@ -115,9 +136,11 @@ def display(ban):
                 pass   #何もしない
         print("")
 
+
 #盤表示(デバッグ用)
 def disp_ban(ban):
     """盤面を表示する"""
+    print('   1  2  3  4  5  6  7  8')
     for y in range(8):
         print(f"{y+1}", end='-')
         for x in range(8):
@@ -128,10 +151,16 @@ def disp_ban(ban):
 
 def othello_loop():
     global f_pass
+    global now_koma
+    global pass_status
+    game_fin = False
 
-    now_koma = BLACK            #現在の順番(最初は黒から)
+    #オセロ盤表示
+    display(ban)
+
     while True:
         #駒が置けるかすべてのマスを判定する
+        f_pass = True
         for y in range(8):
             for x in range(8):
                 chk_ban[y][x] = checkBan(x, y, now_koma)
@@ -140,56 +169,80 @@ def othello_loop():
                 if chk_ban[y][x] != 0:
                     f_pass = False
         
-        #disp_ban(chk_ban)
+        disp_ban(chk_ban)
 
-        #置ける場所がないならパス
-        if f_pass == True:
-            print("passする")
-            continue
+        #置ける場所があるなら入力を促す
+        if f_pass != True:
+            #置ける
+            pass_status = NONE
 
-    
-        # 駒を置く位置を入力する
-        ix, iy = map(int, input("駒を置いてください.(x y):").split())  #mapで数字に変換
-        print(f"{ix} {iy}")
+            while True:
+                # 駒を置く位置を入力する
+                ix, iy = map(int, input("駒を置いてください.(x y):").split())  #mapで数字に変換
+                print(f"{ix} {iy}")
 
-        # 駒が置けるか判定
-        #ret = checkBan(x-1, y-1)
-        if chk_ban[iy-1][ix-1] > 0:
-            #print('駒が置ける')
+                # 駒が置けるか判定
+                if chk_ban[iy-1][ix-1] > 0:
+                    #print('駒が置ける')
 
-            # 駒をひっくり返す
-            checkBan(ix-1, iy-1, now_koma, True)
-            ban[iy-1][ix-1] = now_koma
-        
-        else :
-            #置けなければやり直し
-            print('置けません')
-            continue
-            
+                    # 駒をひっくり返す
+                    checkBan(ix-1, iy-1, now_koma, True)
+                    ban[iy-1][ix-1] = now_koma
+                    break
+                else :
+                    #置けなければやり直し
+                    print('置けません')
+                    continue
 
-        #盤面表示更新
-        display(ban)
+        else:
+            #ゲーム終了判定
+            game_fin = False    #終了判定用フラグ
+            empty = False       #空き判定用フラグ
+            #終了条件
+            # 1 盤に全て駒が置かれた
+            # 2 両者共にパス（置けない）
+            for y in range(8):
+                for x in range(8):
+                    if(ban[y][x] == NONE):
+                        empty = True     #空きあり
 
-        #ゲーム終了判定
+            if(empty != True) or (pass_status != NONE):
+                #空きがない又は両者パスの場合
+                game_fin = True     #ゲーム終了
+            else:
+                pass_status = now_koma  #パスしたことを保存
+
+        if(game_fin == True):
+            #ゲーム終了ならループを抜ける
+            break
 
         #終了でなければ次プレーヤに移行
         if now_koma == BLACK:
             now_koma = WHITE
         else:
             now_koma = BLACK
-        
 
+        #盤面表示更新
+        display(ban)
 
     #結果発表
+    blk_rst, whi_rst = koma_status()
+    if( blk_rst > whi_rst):
+        print('BLACKの勝ち')
+    elif (whi_rst > blk_rst):
+        print('WHITEの勝ち')
+    else:
+        print('引き分け')       
+
+
 
 #
 #メイン
 #
-#オセロ盤表示
-display(ban)
+if __name__ == "__main__":
+    #ゲーム開始
+    othello_loop()
 
-#ゲーム開始
-othello_loop()
 
 
 
