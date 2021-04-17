@@ -29,7 +29,7 @@ chk_ban = [
     [0, 0, 0, 0, 0, 0, 0,0 ]
 ]
 
-def checkBan(x, y, now_koma):
+def checkBan(x, y, now_koma, exe=False):
     """駒が置けるか？"""
     #引数 x,y 位置
 
@@ -73,8 +73,18 @@ def checkBan(x, y, now_koma):
                 #print('自分の駒')
                 #すでに相手の駒があれば返し確定
                 num += tmp
-                break
 
+                if((exe == True) and (tmp != 0)):
+                    #ひっくり返し実行
+                    ix2 = ix
+                    iy2 = iy
+
+                    #駒を置いた座標まで戻りながら駒を返す
+                    while (iy2 != y) or (ix2 != x):
+                        ix2 = ix2 - l_chk[brg][1]
+                        iy2 = iy2 - l_chk[brg][0]
+                        ban[iy2][ix2] = now_koma
+                break
             else:
                 #print('相手の駒')
                 tmp += 1
@@ -139,16 +149,17 @@ def othello_loop():
 
     
         # 駒を置く位置を入力する
-        x, y = map(int, input("駒を置いてください.(x y):").split())  #mapで数字に変換
-        print(f"{x} {y}")
+        ix, iy = map(int, input("駒を置いてください.(x y):").split())  #mapで数字に変換
+        print(f"{ix} {iy}")
 
         # 駒が置けるか判定
         #ret = checkBan(x-1, y-1)
-        if chk_ban[y-1][x-1] > 0:
+        if chk_ban[iy-1][ix-1] > 0:
             #print('駒が置ける')
 
             # 駒をひっくり返す
-            ban[y-1][x-1] = now_koma
+            checkBan(ix-1, iy-1, now_koma, True)
+            ban[iy-1][ix-1] = now_koma
         
         else :
             #置けなければやり直し
