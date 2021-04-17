@@ -2,10 +2,6 @@
 
 f_pass = False   #パス実行有無
 
-class Ban:
-    def __init__(self):
-        self.status = 0
-        self.friend_ps = [0,0,0,0,0,0,0,0]   #味方の駒。0:なし 1:あり
 
 NONE = 0
 BLACK = 1
@@ -20,7 +16,7 @@ ban = [
     [0, 0, 0, 0, 0, 0, 0,0 ], 
     [0, 0, 0, 0, 0, 0, 0,0 ]
 ]
-now_koma = BLACK            #現在の順番(最初は黒から)
+
 
 chk_ban = [
     [0, 0, 0, 0, 0, 0, 0,0 ], 
@@ -33,7 +29,7 @@ chk_ban = [
     [0, 0, 0, 0, 0, 0, 0,0 ]
 ]
 
-def checkBan(x, y):
+def checkBan(x, y, now_koma):
     """駒が置けるか？"""
     #引数 x,y 位置
 
@@ -56,13 +52,13 @@ def checkBan(x, y):
     #既に駒が置いてあるか？
     #置いてあれば、返せる数は0
     if ban[y][x] != NONE:
-        print('すでに駒がある')
+        #print('すでに駒がある')
         return 0 
 
     #盤の最後までチェックしたか？
     #全方位の盤の端までチェックする
     for brg in range(8):
-        print(f'brg={brg}')
+        #print(f'brg={brg}')
         ix = x + l_chk[brg][1]
         iy = y + l_chk[brg][0]
         tmp = 0         #相手の駒の数。自分の駒があれば返せる駒の数
@@ -70,17 +66,17 @@ def checkBan(x, y):
         while (-1 < ix < 8) and (-1 < iy < 8):
             #駒の種類確認
             if ban[iy][ix] == NONE:
-                print('駒がない')
+                #print('駒がない')
                 break
 
             elif ban[iy][ix] == now_koma:
-                print('自分の駒')
+                #print('自分の駒')
                 #すでに相手の駒があれば返し確定
                 num += tmp
                 break
 
             else:
-                print('相手の駒')
+                #print('相手の駒')
                 tmp += 1
 
 
@@ -88,7 +84,7 @@ def checkBan(x, y):
             ix += l_chk[brg][1]
             iy += l_chk[brg][0]
 
-    print(f'返せる数={num}')
+    #print(f'返せる数={num}')
     return num
     #
 
@@ -122,39 +118,56 @@ def disp_ban(ban):
 
 def othello_loop():
     global f_pass
+
+    now_koma = BLACK            #現在の順番(最初は黒から)
     while True:
         #駒が置けるかすべてのマスを判定する
-        for l in range(8):
-            for m in range(8):
-                chk_ban[l][m] = checkBan(m, l)
-        
-        disp_ban(chk_ban)
+        for y in range(8):
+            for x in range(8):
+                chk_ban[y][x] = checkBan(x, y, now_koma)
 
+                #ひっくり返せるマスがあるならパスは無し
+                if chk_ban[y][x] != 0:
+                    f_pass = False
+        
+        #disp_ban(chk_ban)
+
+        #置ける場所がないならパス
+        if f_pass == True:
+            print("passする")
+            continue
+
+    
         # 駒を置く位置を入力する
         x, y = map(int, input("駒を置いてください.(x y):").split())  #mapで数字に変換
         print(f"{x} {y}")
 
-
         # 駒が置けるか判定
         #ret = checkBan(x-1, y-1)
         if chk_ban[y-1][x-1] > 0:
-            print('駒が置ける')
+            #print('駒が置ける')
 
-        # 駒をひっくり返す
-        ban[y-1][x-1] = BLACK
+            # 駒をひっくり返す
+            ban[y-1][x-1] = now_koma
+        
+        else :
+            #置けなければやり直し
+            print('置けません')
+            continue
+            
 
         #盤面表示更新
         display(ban)
 
         #ゲーム終了判定
 
-        #次プレーヤのパス判定
-        
-        if f_pass != True:
-            print("passしない")
-            break
+        #終了でなければ次プレーヤに移行
+        if now_koma == BLACK:
+            now_koma = WHITE
         else:
-            print("passする")
+            now_koma = BLACK
+        
+
 
     #結果発表
 
