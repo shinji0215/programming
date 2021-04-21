@@ -2,7 +2,8 @@ import tkinter
 
 
 def click_btn():
-    button['text'] = 'クリックしました'
+    txt = entry.get()          #テキスト入力の文字取得
+    button['text'] = txt
 
 
 root = tkinter.Tk()                 #オブジェクト生成
@@ -29,5 +30,12 @@ canvas.create_text(50, 300, text='文字列', fill='green', font=('Times New Rom
 canvas.create_line(30, 330, 70, 380, fill='navy', width=5)
 #矩形
 canvas.create_rectangle(40, 390, 160, 400, fill='lime')
+#楕円 create_oval(x1, y1, x2, y2, fill=塗り色,outline=枠線の色, width=枠線の太さ)
+canvas.create_oval(250-80, 200-40, 250+40, 100+40, fill='pink', outline='purple')
+
+#テキスト入力 Entry()
+entry = tkinter.Entry(width=20)         #半角20文字分
+entry.place(x=10, y=10)
+
 
 root.mainloop()
