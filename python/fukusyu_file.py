@@ -1,5 +1,7 @@
 #file読み書き
+#open()/close() ファイルオープン
 #read()/readline()/readlines()
+#write()/writelines()
 
 myfile = open('sample.txt')     #ファイルを開く
 lines = myfile.read()           #内容を読み込む　改行含む全ての行が1つの文字列
@@ -43,6 +45,14 @@ for count, line in enumerate(myfile):       #ファイルオブジェクトを�
     print(f'{count}:{line}', end='')
 myfile.close()      #ファイルを閉じる
 
+
+#ファイル書き込み
+myfile = open('testtest.txt', 'w')
+myfile.write('Hello python\n')
+#myfile.write(100)               #TypeError 文字列以外渡せない
+mylist = ['Hello Python', '', 'Hello World']
+myfile.writelines([item + '\n' for item in mylist])
+myfile.close()
 
 if __name__ == "__main__":
     print("***fukusyu.py***")
