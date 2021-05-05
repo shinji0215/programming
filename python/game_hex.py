@@ -95,14 +95,81 @@ def distance(s_x, s_y, e_x, e_y):
 
     return dis
 
+rect1,rect2,rect3,rect4,rect5,rect6 = '','','','','',''
+def hex_disp2(x, y):
+    global length
+    global a, b, c
+    global rect1,rect2,rect3,rect4,rect5,rect6
+
+    #前回のline描画を消す
+    if rect1 != '':
+        canvas.delete(rect1)
+        canvas.delete(rect2)
+        canvas.delete(rect3)
+        canvas.delete(rect4)
+        canvas.delete(rect5)
+        canvas.delete(rect6)
+
+    #管理座標->描画座標変換
+    cx, cy = byouga_zahyou(x, y)
+
+    x1,y1 = cx, cy-a
+    x2,y2 = cx+b, cy-c
+    x3,y3 = cx+b, cy+c
+    x4,y4 = cx, cy+a
+    x5,y5 = cx-b, cy+c
+    x6,y6 = cx-b, cy-c
+
+     #位置1->2
+    rect1 = canvas.create_line(x1, y1, x2, y2, fill='red', width=3)
+    #位置2->3
+    rect2 = canvas.create_line(x2, y2, x3, y3, fill='red', width=3)
+    #位置3->4
+    rect3 = canvas.create_line(x3, y3, x4, y4, fill='red', width=3)
+    #位置4->5
+    rect4 = canvas.create_line(x4, y4, x5, y5, fill='red', width=3)
+    #位置5->6
+    rect5 = canvas.create_line(x5, y5, x6, y6, fill='red', width=3)
+    #位置6->1
+    rect6 = canvas.create_line(x6, y6, x1, y1, fill='red', width=3)
+
+
 
 #20x20のマスを描く
+
 for y in range(20):
     for x in range(20):
         hex_disp(x, y)              #HEXマップを描画
         distance(p_x, p_y, x, y)    #自分からの距離を計算
 
+#hex_disp2(p_x, p_y)
+key = ''
+def key_down(e):
+    global key
+    key = e.keysym
 
+def key_up(e):
+    global key
+    key = ''
 
+def main_proc():
+    #global key
+    global p_x, p_y
+    hex_disp(p_x, p_y)          #カーソルを消す
 
+    if key == 'Up':
+        p_y = p_y-1
+    if key == 'Down':
+        p_y = p_y+1    
+    if key == 'Left':
+        p_x = p_x-1
+    if key == 'Right':
+        p_x = p_x+1
+    
+    hex_disp2(p_x, p_y)         #カーソル表示
+    root.after(300, main_proc)
+
+root.bind('<KeyPress>', key_down)
+root.bind('<KeyRelease>', key_up)
+main_proc()
 root.mainloop()
