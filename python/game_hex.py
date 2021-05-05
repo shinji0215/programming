@@ -34,19 +34,19 @@ def byouga_zahyou(x, y):
 
     return dx, dy
 
-def hex_disp(xx, yy):
+def hex_disp(x, y):
     global length
     global a, b, c
 
     #管理座標->描画座標変換
-    x, y = byouga_zahyou(xx, yy)
+    cx, cy = byouga_zahyou(x, y)
 
-    x1,y1 = x, y-a
-    x2,y2 = x+b, y-c
-    x3,y3 = x+b, y+c
-    x4,y4 = x, y+a
-    x5,y5 = x-b, y+c
-    x6,y6 = x-b, y-c
+    x1,y1 = cx, cy-a
+    x2,y2 = cx+b, cy-c
+    x3,y3 = cx+b, cy+c
+    x4,y4 = cx, cy+a
+    x5,y5 = cx-b, cy+c
+    x6,y6 = cx-b, cy-c
 
      #位置1->2
     canvas.create_line(x1, y1, x2, y2, fill='navy', width=1)
@@ -60,6 +60,7 @@ def hex_disp(xx, yy):
     canvas.create_line(x5, y5, x6, y6, fill='navy', width=1)
     #位置6->1
     canvas.create_line(x6, y6, x1, y1, fill='navy', width=1)
+
 
 p_x, p_y = 10, 10         #自分の位置(仮)
 def kyori_zahyou(x, y):
@@ -99,7 +100,7 @@ def distance(s_x, s_y, e_x, e_y):
 for y in range(20):
     for x in range(20):
         hex_disp(x, y)              #HEXマップを描画
-        distance(p_x, p_y, x, y)    #距離を計算
+        distance(p_x, p_y, x, y)    #自分からの距離を計算
 
 
 
