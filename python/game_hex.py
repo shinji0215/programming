@@ -21,9 +21,25 @@ a = length
 b = (length / 2)*math.sqrt(3)
 c = length / 2
 
-def hex_disp(x, y):
+cx, cy = 50, 50     #(0,0)位置の中心描画座標
+def byouga_zahyou(x, y):
+    #管理座標->描画座標変換
+    dx = cx
+    dy = cy
+    if y % 2 != 0:      #奇数ならx座標をb分ずらす
+        dx += b
+    dx += 2*b*x 
+
+    dy += (length+c)*y
+
+    return dx, dy
+
+def hex_disp(xx, yy):
     global length
     global a, b, c
+
+    #管理座標->描画座標変換
+    x, y = byouga_zahyou(xx, yy)
 
     x1,y1 = x, y-a
     x2,y2 = x+b, y-c
@@ -71,7 +87,8 @@ def distance(s_x, s_y, e_x, e_y):
     else :
         dis = (d_x2+d_y2)/2
     
-    #ラベル
+    #ラベル（デバッグ用)
+    dx, dy = byouga_zahyou(e_x, e_y)
     label = tkinter.Label(root, text='{:.0f}'.format(dis), font=('System', 8))
     label.place(x=dx, y=dy)
 
@@ -79,20 +96,11 @@ def distance(s_x, s_y, e_x, e_y):
 
 
 #20x20のマスを描く
-cx, cy = 50, 50
-
-dy = cy
 for y in range(20):
-    dx = cx
-    if y % 2 != 0:      #奇数ならx座標をb分ずらす
-        dx += b
-
     for x in range(20):
-        hex_disp(dx, dy)
-        distance(p_x, p_y, x, y)
-        dx += 2*b 
+        hex_disp(x, y)              #HEXマップを描画
+        distance(p_x, p_y, x, y)    #距離を計算
 
-    dy += length+c
 
 
 
