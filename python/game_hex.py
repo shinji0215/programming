@@ -3,17 +3,6 @@ import math
 
 
 
-
-root = tkinter.Tk()                 #オブジェクト生成
-root.title('初めてのウィンドウ')        #ウィンドウのタイトル
-root.geometry('800x800')                #ウィンドウのサイズ
-
-#キャンパス
-canvas = tkinter.Canvas(root, width=800, height=800, bg='skyblue')
-canvas.pack()
-
-
-
 #キャンパスに図形を書く
 #座標はキャンパス基準
 length = 20
@@ -135,12 +124,6 @@ def hex_disp2(x, y):
 
 
 
-#20x20のマスを描く
-
-for y in range(20):
-    for x in range(20):
-        hex_disp(x, y)              #HEXマップを描画
-        distance(p_x, p_y, x, y)    #自分からの距離を計算
 
 #hex_disp2(p_x, p_y)
 key = ''
@@ -167,9 +150,36 @@ def main_proc():
         p_x = p_x+1
     
     hex_disp2(p_x, p_y)         #カーソル表示
+
+    xtmp, ytmp = byouga_zahyou(p_x, p_y)
+    canvas.coords('RZ', xtmp, ytmp)         #キャラ表示
+    
     root.after(300, main_proc)
+
+
+
+
+root = tkinter.Tk()                 #オブジェクト生成
+root.title('初めてのウィンドウ')        #ウィンドウのタイトル
+root.geometry('2400x1000')                #ウィンドウのサイズ
+
+#キャンパス
+canvas = tkinter.Canvas(root, width=2400, height=1000, bg='skyblue')
+canvas.pack()
+#キャラ(image)を表示
+img = tkinter.PhotoImage(file='pen.png')
+c_x, c_y = byouga_zahyou(p_x, p_y)
+canvas.create_image(c_x, c_y, image=img, tag='RZ')
 
 root.bind('<KeyPress>', key_down)
 root.bind('<KeyRelease>', key_up)
+
+#20x20のマスを描く
+for y in range(30):
+    for x in range(52):
+        hex_disp(x, y)              #HEXマップを描画
+        distance(p_x, p_y, x, y)    #自分からの距離を計算
+
+
 main_proc()
 root.mainloop()
