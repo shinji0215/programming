@@ -79,8 +79,9 @@ def distance(s_x, s_y, e_x, e_y):
     
     #ラベル（デバッグ用)
     dx, dy = byouga_zahyou(e_x, e_y)
-    label = tkinter.Label(root, text='{:.0f}'.format(dis), font=('System', 8))
-    label.place(x=dx, y=dy)
+    #label = tkinter.Label(root, text='{:.0f}'.format(dis), font=('System', 8))
+    #label.place(x=dx, y=dy)
+    canvas.create_text(dx, dy, text='{:.0f}'.format(dis), font=('System', 6))
 
     return dis
 
@@ -167,7 +168,7 @@ root.geometry('2400x1000')                #ウィンドウのサイズ
 canvas = tkinter.Canvas(root, width=2400, height=1000, bg='skyblue')
 canvas.pack()
 #キャラ(image)を表示
-img = tkinter.PhotoImage(file='pen.png')
+img = tkinter.PhotoImage(file='test_red.png')
 c_x, c_y = byouga_zahyou(p_x, p_y)
 canvas.create_image(c_x, c_y, image=img, tag='RZ')
 

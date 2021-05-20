@@ -38,18 +38,19 @@ def hex_disp(x, y):
     x6,y6 = cx-c, cy-b
 
      #位置1->2
-    canvas.create_line(x1, y1, x2, y2, fill='navy', width=1)
+    #canvas.create_line(x1, y1, x2, y2, fill='navy', width=1)
     #位置2->3
-    canvas.create_line(x2, y2, x3, y3, fill='navy', width=1)
+    #canvas.create_line(x2, y2, x3, y3, fill='navy', width=1)
     #位置3->4
-    canvas.create_line(x3, y3, x4, y4, fill='navy', width=1)
+    #canvas.create_line(x3, y3, x4, y4, fill='navy', width=1)
     #位置4->5
-    canvas.create_line(x4, y4, x5, y5, fill='navy', width=1)
+    #canvas.create_line(x4, y4, x5, y5, fill='navy', width=1)
     #位置5->6
-    canvas.create_line(x5, y5, x6, y6, fill='navy', width=1)
+    #canvas.create_line(x5, y5, x6, y6, fill='navy', width=1)
     #位置6->1
-    canvas.create_line(x6, y6, x1, y1, fill='navy', width=1)
+    #canvas.create_line(x6, y6, x1, y1, fill='navy', width=1)
 
+    canvas.create_polygon(x1, y1, x2, y2, x3, y3, x4, y4, x5, y5, x6, y6, fill='gray', outline='navy', width=1)
 
 p_x, p_y = 3, 3         #自分の位置(仮)
 def kyori_zahyou(x, y):
@@ -79,8 +80,9 @@ def distance(s_x, s_y, e_x, e_y):
     
     #ラベル（デバッグ用)
     dx, dy = byouga_zahyou(e_x, e_y)
-    label = tkinter.Label(root, text='{:.0f}'.format(dis), font=('System', 8))
-    label.place(x=dx, y=dy)
+    #label = tkinter.Label(root, text='{:.0f}'.format(dis), font=('System', 8))
+    #label.place(x=dx, y=dy)
+    canvas.create_text(dx, dy, text='{:.0f}'.format(dis), font=('System', 8))
 
     return dis
 
@@ -161,11 +163,32 @@ def main_proc():
 
 root = tkinter.Tk()                 #オブジェクト生成
 root.title('初めてのウィンドウ')        #ウィンドウのタイトル
-root.geometry('2400x1200')                #ウィンドウのサイズ
+root.geometry('1200x800')                #ウィンドウのサイズ
 
 #キャンパス
-canvas = tkinter.Canvas(root, width=2400, height=1200, bg='skyblue')
-canvas.pack()
+#canvas = tkinter.Canvas(root, width=2400, height=1200, bg='skyblue')
+#canvas.pack()  #canvasを画面の上・中央に配置する
+canvas = tkinter.Canvas(root, bg='skyblue')
+canvas.place(x=0, y=0, width=2400, height=1200)
+
+#Scrollbarを生成して配置
+vbar = tkinter.Scrollbar(root, orient=tkinter.VERTICAL)
+vbar.pack(side=tkinter.RIGHT, fill=tkinter.Y)
+hbar = tkinter.Scrollbar(root, orient=tkinter.HORIZONTAL)
+hbar.pack(side=tkinter.BOTTOM, fill=tkinter.X)
+
+#Scrollbarの制御をCanvasに通知
+vbar.config(command=canvas.yview)
+hbar.config(command=canvas.xview)
+
+#Canvasのスクロール範囲を設定
+canvas.config(scrollregion=(0, 0, 2500, 1500))
+
+#Canvasの可動域をscrollbarに通知
+canvas.config(yscrollcommand=vbar.set, xscrollcommand=hbar.set)
+
+
+
 #キャラ(image)を表示
 img = tkinter.PhotoImage(file='test_red.png')
 c_x, c_y = byouga_zahyou(p_x, p_y)
